@@ -55,6 +55,9 @@ static char sccsid[] = "@(#)nohup.c	8.1 (Berkeley) 6/6/93";
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef __linux
+#include <wait.h>
+#endif
 #include "nohup_email.h"
 
 static void dofile(void);
@@ -75,10 +78,10 @@ main(int argc, char *argv[])
 {
 	int exit_status;
 
-	while (getopt(argc, argv, "") != -1)
-		usage();
-	argc -= optind;
-	argv += optind;
+	//while (getopt(argc, argv, "") != -1)
+	//	usage();
+	argc -= 1;
+	argv += 1;
 	if (argc < 1)
 		usage();
 
@@ -87,7 +90,8 @@ main(int argc, char *argv[])
   if(child_pid==0){
 	  
     (void)signal(SIGHUP, SIG_IGN);
-    if (isatty(STDOUT_FILENO))
+    close(0);
+		if (isatty(STDOUT_FILENO))
       dofile();
     if (isatty(STDERR_FILENO) && dup2(STDOUT_FILENO, STDERR_FILENO) == -1)
       /* may have just closed stderr */
@@ -99,7 +103,10 @@ main(int argc, char *argv[])
     err(exit_status, "%s", argv[0]);
   
   }else{
-    while(wait(NULL)!=-1);
+		close(0);
+    printf("Running command %s\n",*argv);
+		while(wait(NULL)!=-1)
+			sleep(1);
     nohup_email_send(argv[0]);
   }
 }
