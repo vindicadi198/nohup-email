@@ -30,7 +30,7 @@ email address**.
 **Currently you will need to store the password for the email in plain text and
 hence I would recommend this account be not your primary email**.
 
-**The utility currently has Yahoo SMTP hard coded **.
+**The utility currently has Yahoo SMTP hard coded**.
 
 I am yet to find a way to make it work with Gmail without registering the app
 with Google Apps.
